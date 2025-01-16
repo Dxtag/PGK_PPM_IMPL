@@ -25,7 +25,6 @@ void FloydSteinberg(PPM& img,int (quantization)(int) ){
         GREEN_ERR = tmp.GREEN - new_px.GREEN;
         BLUE_ERR =  tmp.BLUE  - new_px.BLUE ;
 
-        img.SetPixel(w,h,new_px);
 
         // Rozłożenie błedu na okoliczne piksele
         //Schemat px
