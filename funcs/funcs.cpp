@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 #include <cmath>
+#include <iostream>
 
 // Prosta funkcja zamieniająca palete 24 bitową na 3 bitową,
 //  jak słabo działa zmienić threshold na coś innego niz 192
@@ -114,7 +115,7 @@ void DrawLine(PPM& img,std::pair<int,int> startxy, std::pair<int,int> endxy, pix
     std::function<int(int)> fn_x;
     if (dx){
         fn_x = [startxy,dx,dy](int x)->int{ // funkcja xi->yi
-        return round((double)dy/dx)*(x-startxy.first) + startxy.second;
+            return round(dy/(double)dx*(x-startxy.first) + startxy.second);
         };
     }
     else{
@@ -126,10 +127,11 @@ void DrawLine(PPM& img,std::pair<int,int> startxy, std::pair<int,int> endxy, pix
 
     //Potrzebne do pętli uzupełnień
     std::vector<std::pair<int,int>> line_xy;
-
+    int y;
     for(int x=startxy.first; x<=endxy.first; x++){
-        img.SetPixel(x, img.GetWidth()-fn_x(x)-1 , px); // odwrócenie y - 0,0 jest teraz w lewym dolnym rogu
-        line_xy.emplace_back(x, img.GetWidth()-fn_x(x)-1 );
+        y = img.GetWidth()-fn_x(x)-1;// odwrócenie y - 0,0 jest teraz w lewym dolnym rogu
+        img.SetPixel(x,  y, px);
+        line_xy.emplace_back(x, y);
     }
 
     //Pętla uzupełnień
