@@ -100,7 +100,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
 }
 
 
-// 0,0 - lewy górny róg obrazka
+// 0,0 - lewy dolny róg obrazka
 void DrawLine(PPM& img,std::pair<int,int> startxy, std::pair<int,int> endxy, pixel px){
     if (!(img.In(startxy.first,startxy.second) && img.In(endxy.first,endxy.second))){
         throw std::string("Linia poza obrazkiem "+
