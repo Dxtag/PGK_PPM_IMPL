@@ -15,11 +15,11 @@ PPM::PPM(std::istream &in){
     in>>this->size.first;
     in>>this->size.second;
     in>>this->max_color;
-    this->image = reinterpret_cast<pixel**>(malloc(sizeof(pixel*)*this->GetHeight()));
+    this->image = reinterpret_cast<color**>(malloc(sizeof(color*) * this->GetHeight()));
     for(int i=0;i<this->GetHeight();i++) {
-        this->image[i] = reinterpret_cast<pixel*>(malloc(sizeof(pixel)*this->GetWidth()));
+        this->image[i] = reinterpret_cast<color*>(malloc(sizeof(color) * this->GetWidth()));
         for (int j = 0; j < this->GetWidth(); j++) {
-            pixel px{};
+            color px{};
             in>>px.RED;
             in>>px.GREEN;
             in>>px.BLUE;
@@ -35,26 +35,26 @@ PPM::~PPM() {
     free(this->image);
 }
 
-PPM::PPM(int w, int h, int max_color, pixel bg) {
+PPM::PPM(int w, int h, int max_color, color bg) {
     this->size = std::pair<int,int>(w,h);
     this->max_color = max_color;
     this->type = "P3";
-    this->image = reinterpret_cast<pixel**>(malloc(sizeof(pixel*)*this->GetHeight()));
+    this->image = reinterpret_cast<color**>(malloc(sizeof(color*) * this->GetHeight()));
     for(int i=0;i<this->GetHeight();i++) {
-        this->image[i] = reinterpret_cast<pixel*>(malloc(sizeof(pixel)*this->GetWidth()));
+        this->image[i] = reinterpret_cast<color*>(malloc(sizeof(color) * this->GetWidth()));
         for (int j = 0; j < this->GetWidth(); j++) {
             this->image[i][j] = bg;
         }
     }
 }
 
-void PPM::SetPixel(int w, int h, pixel px) {
+void PPM::SetPixel(int w, int h, color clr) {
     if (!this->In(w,h))
         throw ("Piksel poza obrazkiem"+ std::to_string(w)+" "+std::to_string(h));
-    this->image[h][w]=px;
+    this->image[h][w]=clr;
 }
 
-pixel PPM::GetPixel(int w, int h) {
+color PPM::GetPixel(int w, int h) {
     if (!this->In(w,h))
         throw ("Piksel poza obrazkiem "+ std::to_string(w)+" "+std::to_string(h));
     return this->image[h][w];
@@ -93,7 +93,7 @@ bool PPM::In(int w, int h) {
     return w<GetWidth()&&h<GetHeight()&&h>=0&&w>=0;
 }
 
-std::ostream& operator<<(std::ostream& out, pixel& px){
+std::ostream& operator<<(std::ostream& out, color& px){
     out<<px.RED<<" "<<px.GREEN<<" "<<px.BLUE;
     return out;
 }

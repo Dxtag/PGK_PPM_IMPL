@@ -12,7 +12,7 @@ int quantization24_3(int color) { return color > 192 ? 255 : 0; }
 
 bool IsMono(PPM &img)
 {
-    pixel tmp = {};
+    color tmp = {};
     for (int h = img.GetHeight() - 1; h >= 0; h--)
     {
         for (int w = 0; w < img.GetWidth(); w++)
@@ -31,8 +31,8 @@ bool IsMono(PPM &img)
 void FloydSteinberg(PPM &img, int(quantization)(int))
 {
     int RED_ERR, GREEN_ERR, BLUE_ERR;
-    pixel tmp{};
-    pixel new_px = {};
+    color tmp{};
+    color new_px = {};
     for (int h = img.GetHeight() - 1; h >= 0; h--)
     {
         for (int w = 0; w < img.GetWidth(); w++)
@@ -60,7 +60,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
             // 7/16
             if (img.In(w + 1, h))
             {
-                pixel px = img.GetPixel(w + 1, h);
+                color px = img.GetPixel(w + 1, h);
                 px.RED += (RED_ERR * 7 / 16);
                 px.GREEN += (GREEN_ERR * 7 / 16);
                 px.BLUE += (BLUE_ERR * 7 / 16);
@@ -70,7 +70,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
             // 3/16
             if (img.In(w - 1, h - 1))
             {
-                pixel px = img.GetPixel(w - 1, h - 1);
+                color px = img.GetPixel(w - 1, h - 1);
                 px.RED += (RED_ERR * 3 / 16);
                 px.GREEN += (GREEN_ERR * 3 / 16);
                 px.BLUE += (BLUE_ERR * 3 / 16);
@@ -80,7 +80,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
             // 5/16
             if (img.In(w, h - 1))
             {
-                pixel px = img.GetPixel(w, h - 1);
+                color px = img.GetPixel(w, h - 1);
                 px.RED += (RED_ERR * 5 / 16);
                 px.GREEN += (GREEN_ERR * 5 / 16);
                 px.BLUE += (BLUE_ERR * 5 / 16);
@@ -90,7 +90,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
             // 1/16
             if (img.In(w + 1, h - 1))
             {
-                pixel px = img.GetPixel(w + 1, h - 1);
+                color px = img.GetPixel(w + 1, h - 1);
                 px.RED += (RED_ERR * 1 / 16);
                 px.GREEN += (GREEN_ERR * 1 / 16);
                 px.BLUE += (BLUE_ERR * 1 / 16);
@@ -102,7 +102,7 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
 
 
 // 0,0 - lewy dolny róg obrazka
-void DrawLine(PPM& img,std::pair<int,int> startxy, std::pair<int,int> endxy, pixel px){
+void DrawLine(PPM& img, std::pair<int,int> startxy, std::pair<int,int> endxy, color px){
     if (!(img.In(startxy.first,startxy.second) && img.In(endxy.first,endxy.second))){
         throw std::string("Linia poza obrazkiem "+
         std::to_string(startxy.first)) + " "
@@ -148,3 +148,8 @@ void DrawLine(PPM& img,std::pair<int,int> startxy, std::pair<int,int> endxy, pix
         }
     }
 }
+
+void DrawCircle(PPM &img, std::pair<int, int> startxy, int rad, color px) {
+
+}
+
