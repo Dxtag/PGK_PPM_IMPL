@@ -12,12 +12,18 @@ struct color
     int RED;
     int GREEN;
     int BLUE;
+    color();
+    color(int r, int g, int b) : RED(r),GREEN(g),BLUE(b){};
+    bool operator==(color c);
 };
 
 // Do użycia zamiast std::pair
-struct pixel{
+struct point{
     int x;
     int y;
+    point();
+    point(int x_, int y_) : x(x_), y(y_){};
+    bool operator==(point p);
 };
 
 std::ostream &operator<<(std::ostream &out, color &px);
@@ -50,6 +56,7 @@ public:
     int GetHeight() { return this->size.second; };
     int GetMaxColor() { return this->max_color; };
     void SetMaxColor(int max_color);
+    bool operator==(PPM& img);
     friend std::ostream &operator<<(std::ostream &out, PPM &img);
 
 private:

@@ -7,8 +7,9 @@
 
 int quantization24_3(int color);
 void FloydSteinberg(PPM& img,int (quantization)(int) );
-void DrawLine(PPM& img, std::pair<int,int> startxy, std::pair<int,int> endxy, color px);
-void DrawCircle(PPM& img, std::pair<int,int> startxy, int rad, color px);
+void DrawLine(PPM& img, point startxy, point endxy, color px);
+void DrawCircle(PPM& img, point startxy, int rad, color px);
+void DrawCircle_(PPM &img, point start, int rad, color px);
 bool IsMono(PPM &img);
 
 #endif 

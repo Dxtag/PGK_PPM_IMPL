@@ -6,6 +6,7 @@
 
 void fs();
 void dl();
+void dc();
 int main() {
     std::cout<<"1: Algorytm Floyda-Steinberga (24bity do 3 bitów)\n2: Rysowanie linii\nopcja:";
     int opt;
@@ -17,6 +18,8 @@ int main() {
         case 2:
         dl();
         break;
+        case 3:
+        dc();
         default:
             break;
     }
@@ -59,7 +62,38 @@ void dl(){
     std::cin>>x>>y>>lsx>>lsy>>lex>>les;
     PPM img(x, y);
     try{
-        DrawLine(img, std::pair<int,int>(lsx,lsy), std::pair<int,int>(lex,les),COLOR_BLUE);
+        DrawLine(img, point(lsx,lsy), point(lex,les),COLOR_BLUE);
+    }
+    catch (std::string& e){
+        std::cout<<e<<"\n";
+        return;
+    }
+
+    std::ofstream o;
+    o.open(out);
+    if (!o.is_open()){
+        std::cout<<"\nOtwarcie sie nie powiodlo";
+        return;
+    }
+    o<<img;
+    if(o.good()){std::cout<<"\nZapisanie powiodlo sie";}
+    o.close();
+}
+
+void dc(){
+    std::cout<<"Rysowanie Okregu\n";
+    std::cout<<"Podaj sciezke do plik wyjsc: ";
+    std::string out;
+    std::cin>>out;
+    int x,y,lsx,lsy,r;
+    std::cout<<"Podaj rozmiar x, rozmiar y, poczatek x poczatek y  promien r\n";
+    std::cin>>x>>y>>lsx>>lsy>>r;
+    PPM img(x, y);
+    try{
+        std::cout<<"algortym w wikipedii:\n";
+        DrawCircle_(img, point(lsx,lsy),r,COLOR_BLUE);
+        std::cout<<"algortym ze slajdu:\n";
+        DrawCircle(img, point(lsx,lsy),r,COLOR_BLUE);
     }
     catch (std::string& e){
         std::cout<<e<<"\n";

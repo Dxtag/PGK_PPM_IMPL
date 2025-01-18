@@ -93,8 +93,33 @@ bool PPM::In(int w, int h) {
     return w<GetWidth()&&h<GetHeight()&&h>=0&&w>=0;
 }
 
+bool PPM::operator==(PPM &img) {
+    if (this->GetHeight()!=img.GetHeight() || this->GetWidth()!=img.GetWidth()) return false;
+    for(int i=0;i<this->GetHeight();i++){
+        for (int j = 0; j < this->GetWidth(); j++) {
+            if (!((img.GetPixel(j, i)) == this->GetPixel(j, i))) return false;
+        }
+    }
+    return true;
+}
+
 std::ostream& operator<<(std::ostream& out, color& px){
     out<<px.RED<<" "<<px.GREEN<<" "<<px.BLUE;
     return out;
 }
 
+color::color() {
+
+}
+
+bool color::operator==(color c) {
+    return c.RED==this->RED && c.BLUE==this->BLUE && this->GREEN == c.GREEN;
+}
+
+point::point() {
+
+}
+
+bool point::operator==(point p) {
+    return p.x==this->x && p.y == this->y;
+}

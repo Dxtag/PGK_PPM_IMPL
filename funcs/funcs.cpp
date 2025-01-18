@@ -101,55 +101,111 @@ void FloydSteinberg(PPM &img, int(quantization)(int))
 }
 
 
-// 0,0 - lewy dolny róg obrazka
-void DrawLine(PPM& img, std::pair<int,int> startxy, std::pair<int,int> endxy, color px){
-    if (!(img.In(startxy.first,startxy.second) && img.In(endxy.first,endxy.second))){
+// 0,0 - lewy górny róg obrazka
+void DrawLine(PPM& img, point startxy, point endxy, color px){
+
+    if (!(img.In(startxy.x,startxy.y) && img.In(endxy.x,endxy.y))){
         throw std::string("Linia poza obrazkiem "+
-        std::to_string(startxy.first)) + " "
-        + std::to_string(startxy.second)+"; "
-        +std::to_string(endxy.first) + " "
-        + std::to_string(endxy.second);
+                          std::to_string(startxy.x)) + " "
+              + std::to_string(startxy.y)+"; "
+              +std::to_string(endxy.x) + " "
+              + std::to_string(endxy.y);
     }
-    int dx = abs(startxy.first-endxy.first);
-    int dy = abs(startxy.second-endxy.second);
-    std::function<int(int)> fn_x;
+
+    int dx = abs(startxy.x-endxy.x);
+    int dy = abs(startxy.y-endxy.y);
+    std::function<int(int)> fn_x; // Rysowanie przy użyciu funkcji, do dodania algorytm przyrostowy
     if (dx){
         fn_x = [startxy,dx,dy](int x)->int{ // funkcja xi->yi
-            return round(dy/(double)dx*(x-startxy.first) + startxy.second);
+            return round(dy/(double)dx*(x-startxy.x) + startxy.y);
         };
     }
     else{
-        for (int y=startxy.second;y<endxy.second;y++){
-            img.SetPixel(startxy.first, img.GetWidth()-y-1, px);
+        for (int y=startxy.y;y<endxy.y;y++){
+            img.SetPixel(startxy.x, y, px);
         }
         return;
     }
 
     //Potrzebne do pętli uzupełnień
-    std::vector<std::pair<int,int>> line_xy;
+    std::vector<point> line_xy;
     int y;
-    for(int x=startxy.first; x<=endxy.first; x++){
-        y = img.GetWidth()-fn_x(x)-1;// odwrócenie y - 0,0 jest teraz w lewym dolnym rogu
+    for(int x=startxy.x; x<=endxy.x; x++){
+        y = fn_x(x);
         img.SetPixel(x,  y, px);
         line_xy.emplace_back(x, y);
     }
 
     //Pętla uzupełnień
     for (int i=0; i<dx;i++){
-        if (line_xy[i].second > line_xy[i+1].second){
-            for(int y=line_xy[i+1].second;y<line_xy[i].second;y++){
-                img.SetPixel(line_xy[i].first,y,px);
+        if (line_xy[i].y > line_xy[i+1].y){
+            for(int y=line_xy[i+1].y;y<line_xy[i].y;y++){
+                img.SetPixel(line_xy[i].x,y,px);
             }
         }
         else{
-            for(int y=line_xy[i].second;y<line_xy[i+1].second;y++){
-                img.SetPixel(line_xy[i].first,y,px);
+            for(int y=line_xy[i].y;y<line_xy[i+1].y;y++){
+                img.SetPixel(line_xy[i].x,y,px);
             }
         }
     }
 }
 
-void DrawCircle(PPM &img, std::pair<int, int> startxy, int rad, color px) {
 
+//alogrytm ze slajdu ale coś nie działa
+void DrawCircle(PPM &img, point start, int rad, color px) {
+    int x0_ = 0, y0_=rad; // x0_ = x0' y0_ = x0' ze slajdu
+    int xi_=0,yi_=0;
+
+    for(int i=0;i<=rad;i++){
+        xi_ = x0_ + i;
+        yi_ = y0_ - round(sqrt(rad*rad - i*i));
+        std::cout<<"x:"<<xi_<<" y:"<<yi_<<"\n";
+        if (img.In(start.x + xi_, start.y + yi_))
+            img.SetPixel(start.x + xi_, start.y + yi_,px);
+        if (img.In(start.x + xi_, start.y + yi_))
+            img.SetPixel(start.x + xi_, start.y + yi_,px);
+        if (img.In(start.x - xi_, start.y + yi_))
+            img.SetPixel(start.x - xi_, start.y + yi_,px);
+        if (img.In(start.x + xi_, start.y - yi_))
+            img.SetPixel(start.x + xi_, start.y - yi_,px);
+        if (img.In(start.x - xi_, start.y - yi_))
+            img.SetPixel(start.x - xi_, start.y - yi_,px);
+        if (img.In(start.x + yi_, start.y + xi_))
+            img.SetPixel(start.x + yi_, start.y + xi_,px);
+        if (img.In(start.x - yi_, start.y + xi_))
+            img.SetPixel(start.x - yi_, start.y + xi_,px);
+        if (img.In(start.x + yi_, start.y - xi_))
+            img.SetPixel(start.x + yi_, start.y - xi_,px);
+        if (img.In(start.x - yi_, start.y - xi_))
+            img.SetPixel(start.x - yi_, start.y - xi_,px);
+    }
 }
 
+// https://en.wikipedia.org/wiki/Midpoint_circle_algorithm do testu tego poprzedniego
+void DrawCircle_(PPM &img, point start, int rad, color px) {
+    int x = 0, y = rad;
+    int d = 3 - 2 * rad;
+    while (x <= y) {
+        std::cout<<"x:"<<x<<" y:"<<y<<"\n";
+        if(img.In(start.x + x, start.y + y))
+            img.SetPixel(start.x + x, start.y + y,px);
+        if(img.In(start.x - x, start.y + y))
+            img.SetPixel(start.x - x, start.y + y,px);
+        if(img.In(start.x + x, start.y - y))
+            img.SetPixel(start.x + x, start.y - y,px);
+        if(img.In(start.x - x, start.y - y))
+            img.SetPixel(start.x - x, start.y - y,px);
+        if(img.In(start.x + y, start.y + x))
+            img.SetPixel(start.x + y, start.y + x,px);
+        if(img.In(start.x - y, start.y + x))
+            img.SetPixel(start.x - y, start.y + x,px);
+        if(img.In(start.x + y, start.y - x))
+            img.SetPixel(start.x + y, start.y - x,px);
+        if(img.In(start.x - y, start.y - x))
+            img.SetPixel(start.x - y, start.y - x,px);
+        x++;
+
+        if (d > 0) {y--;d += 4 * (x - y) + 10;} else {d += 4 * x + 6;}
+    }
+}
