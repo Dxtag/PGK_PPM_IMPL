@@ -54,6 +54,11 @@ void PPM::SetPixel(int w, int h, color clr) {
     this->image[h][w]=clr;
 }
 
+void PPM::SetPixel(point p, color clr)
+{
+    this->SetPixel(p.x,p.y,clr);
+}
+
 color PPM::GetPixel(int w, int h) {
     if (!this->In(w,h))
         throw ("Piksel poza obrazkiem "+ std::to_string(w)+" "+std::to_string(h));

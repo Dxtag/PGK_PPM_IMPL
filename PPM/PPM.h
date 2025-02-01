@@ -46,16 +46,18 @@ const color COLOR_BROWN = {165, 42, 42};
 class PPM
 {
 public:
+    PPM()=default;
     PPM(std::istream &in);
     PPM(int w, int h, int max_color = 255, color bg=COLOR_WHITE);
-    ~PPM();
+    virtual ~PPM();
     void SetPixel(int w, int h, color clr);
+    void SetPixel(point p, color clr);
     color GetPixel(int w, int h);
     bool In(int w, int h); // Sprawdz czy piksel mieści sie w obrazku
-    int GetWidth() { return this->size.first; };
-    int GetHeight() { return this->size.second; };
-    int GetMaxColor() { return this->max_color; };
-    void SetMaxColor(int max_color);
+    virtual int GetWidth() { return this->size.first; };
+    virtual int GetHeight() { return this->size.second; };
+    virtual int GetMaxColor() { return this->max_color; };
+    virtual void SetMaxColor(int max_color);
     bool operator==(PPM& img);
     friend std::ostream &operator<<(std::ostream &out, PPM &img);
 
